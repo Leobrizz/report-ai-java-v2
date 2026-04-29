@@ -6,6 +6,7 @@ public class AppConfig {
     private Path cucumberPath;
     private Path allurePath;
     private Path outputDir = Path.of("output");
+    private Path historyDir;
     private String project = "QA Automation";
     private String env = "UAT";
     private String framework = "Cucumber + Selenium";
@@ -20,6 +21,8 @@ public class AppConfig {
     public void setAllurePath(Path allurePath) { this.allurePath = allurePath; }
     public Path getOutputDir() { return outputDir; }
     public void setOutputDir(Path outputDir) { this.outputDir = outputDir; }
+    public Path getHistoryDir() { return historyDir; }
+    public void setHistoryDir(Path historyDir) { this.historyDir = historyDir; }
     public String getProject() { return project; }
     public void setProject(String project) { this.project = project; }
     public String getEnv() { return env; }
