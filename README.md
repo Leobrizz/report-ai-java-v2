@@ -5,7 +5,9 @@ Librería y CLI en **Java 17** para:
 - leer resultados de **Allure** (`*-result.json`)
 - normalizar errores y detectar repetidos
 - clasificar por reglas
-- enriquecer con IA local (**Ollama / Hollama**) o compatible con OpenAI/Codex
+
+- enriquecer con IA local (**Ollama / Hollama**) o cloud (**OpenAI, Codex, Gemini**)
+
 - guardar historial de ejecuciones
 - generar un **reporte Word `.docx`**
 
@@ -124,13 +126,12 @@ También te sirve para endpoints compatibles con OpenAI montados localmente o v�
 
 ### 4. Modo Codex (nuevo)
 
-Este modo usa el cliente OpenAI-compatible pero con `--ai.mode=codex`, pensado para usar modelos de Codex desde un endpoint compatible:
+Este modo está separado de `openai` en la CLI (`--ai.mode=codex`) para que puedas rutear y configurar Codex explícitamente.
 
 
 ```powershell
 mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --ai.mode=codex --ai.baseUrl=https://api.openai.com/v1 --ai.model=codex-mini-latest --ai.apiKey=TU_API_KEY"
 ```
-
 
 ### 5. Modo Gemini (nuevo)
 También podés elegir `--ai.mode=gemini` con endpoint/modelo compatibles.
@@ -139,7 +140,7 @@ También podés elegir `--ai.mode=gemini` con endpoint/modelo compatibles.
 mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --ai.mode=gemini --ai.baseUrl=TU_ENDPOINT_COMPATIBLE --ai.model=gemini-2.5-pro --ai.apiKey=TU_API_KEY"
 ```
 
-
+---
 
 ## Salidas
 El proceso genera:
@@ -210,6 +211,12 @@ Además de CLI, ahora podés usar una app Swing:
 
 ```powershell
 mvn clean compile exec:java "-Dexec.mainClass=com.acme.reportai.cli.ReportAiDesktopApp"
+```
+
+Si en tu shell tenés problemas con `-Dexec.mainClass`, usá esta opción robusta (sin punto en el nombre del parámetro):
+
+```powershell
+mvn clean compile exec:java "-Drun.mainClass=com.acme.reportai.cli.ReportAiDesktopApp"
 ```
 
 Desde la UI podés:
