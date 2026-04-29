@@ -5,7 +5,9 @@ Librería y CLI en **Java 17** para:
 - leer resultados de **Allure** (`*-result.json`)
 - normalizar errores y detectar repetidos
 - clasificar por reglas
+
 - enriquecer con IA local (**Ollama / Hollama**) o cloud (**OpenAI, Codex, Gemini**)
+
 - guardar historial de ejecuciones
 - generar un **reporte Word `.docx`**
 
@@ -123,7 +125,9 @@ mvn clean compile exec:java "-Dexec.args=--cucumber=C:\ruta\cucumber.json --outp
 También te sirve para endpoints compatibles con OpenAI montados localmente o vía gateway.
 
 ### 4. Modo Codex (nuevo)
+
 Este modo está separado de `openai` en la CLI (`--ai.mode=codex`) para que puedas rutear y configurar Codex explícitamente.
+
 
 ```powershell
 mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --ai.mode=codex --ai.baseUrl=https://api.openai.com/v1 --ai.model=codex-mini-latest --ai.apiKey=TU_API_KEY"
