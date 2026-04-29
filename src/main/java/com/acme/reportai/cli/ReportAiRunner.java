@@ -36,7 +36,7 @@ public class ReportAiRunner {
         }
 
         if (config.getAllurePath() != null) {
-            if (!Files.exists(config.getAllurePath())) throw new IllegalArgumentException("No existe la carpeta allure: " + config.getAllurePath());
+            if (!Files.exists(config.getAllurePath())) throw new IllegalArgumentException("No existe la ruta allure (carpeta o *-result.json): " + config.getAllurePath());
             ExecutionReport allure = new AllureResultsParser().parse(config.getAllurePath());
             merged.getTestCases().addAll(allure.getTestCases());
         }
