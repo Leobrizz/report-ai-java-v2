@@ -44,7 +44,9 @@ public class ReportAiApplication {
 
         AiProvider aiProvider = switch (config.getAiMode().toLowerCase()) {
             case "ollama" -> new OllamaAiProvider(config.getAiBaseUrl(), config.getAiModel());
+            case "hollama" -> new OllamaAiProvider(config.getAiBaseUrl(), config.getAiModel());
             case "openai" -> new OpenAiCompatibleProvider(config.getAiBaseUrl(), config.getAiModel(), config.getAiApiKey());
+            case "codex" -> new OpenAiCompatibleProvider(config.getAiBaseUrl(), config.getAiModel(), config.getAiApiKey());
             default -> new MockAiProvider();
         };
 
