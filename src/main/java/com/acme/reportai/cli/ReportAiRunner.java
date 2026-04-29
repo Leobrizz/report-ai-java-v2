@@ -15,10 +15,11 @@ import com.acme.reportai.parser.AllureResultsParser;
 import com.acme.reportai.parser.CucumberJsonParser;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
 public class ReportAiRunner {
-    public static AnalysisResult run(AppConfig config) throws Exception {
+    public static Path run(AppConfig config) throws Exception {
         if (config.getCucumberPath() == null && config.getAllurePath() == null) {
             throw new IllegalArgumentException("Debes indicar --cucumber=... o --allure=...");
         }
@@ -56,7 +57,6 @@ public class ReportAiRunner {
         else historyStore.append(config.getOutputDir(), analysis);
 
         WordReportExporter exporter = new WordReportExporter();
-        exporter.export(config.getOutputDir(), analysis);
-        return analysis;
+        return exporter.export(config.getOutputDir(), analysis);
     }
 }

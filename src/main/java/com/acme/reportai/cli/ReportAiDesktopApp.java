@@ -51,8 +51,8 @@ public class ReportAiDesktopApp {
                 cfg.setAiModel(model.getText());
                 cfg.setAiApiKey(apiKey.getText());
 
-                ReportAiRunner.run(cfg);
-                log.append("OK: reporte generado en " + cfg.getOutputDir().toAbsolutePath() + "\n");
+                var docx = ReportAiRunner.run(cfg);
+                log.append("OK: reporte generado en " + docx.toAbsolutePath() + "\n");
             } catch (Exception ex) {
                 log.append("ERROR: " + ex.getMessage() + "\n");
             }

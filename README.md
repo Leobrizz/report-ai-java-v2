@@ -143,19 +143,21 @@ El proceso genera:
 
 ```text
 output/
- ├── executive-report.docx
+ ├── executive-report-001.docx
  ├── analysis.json
  └── history/
      └── executions.jsonl
 ```
 
-### executive-report.docx
+### executive-report-XXX.docx
 Documento Word con:
 - resumen ejecutivo
 - totales
 - top errores repetidos
 - clasificación por causa probable
 - detalle por caso fallido
+
+> Cada ejecución crea un nuevo Word incremental (`executive-report-001.docx`, `executive-report-002.docx`, etc.), sin pisar el anterior.
 
 ### analysis.json
 Dump técnico del análisis.

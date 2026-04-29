@@ -3,8 +3,7 @@ package com.acme.reportai.cli;
 public class ReportAiApplication {
     public static void main(String[] args) throws Exception {
         AppConfig config = new ArgsParser().parse(args);
-        ReportAiRunner.run(config);
-        var docx = config.getOutputDir().resolve("executive-report.docx");
+        var docx = ReportAiRunner.run(config);
 
         System.out.println("Análisis completado.");
         System.out.println("DOCX generado en: " + docx.toAbsolutePath());
