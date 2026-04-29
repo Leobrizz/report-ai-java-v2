@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Stream;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
@@ -22,7 +23,7 @@ import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 public class WordReportExporter {
     public Path export(Path outputDir, AnalysisResult analysis) throws Exception {
         Files.createDirectories(outputDir);
-        Path out = outputDir.resolve("executive-report.docx");
+        Path out = nextIndexedReportPath(outputDir);
 
         try (XWPFDocument doc = new XWPFDocument()) {
             title(doc, "Reporte de análisis – Ejecución automatizada");
@@ -76,6 +77,24 @@ public class WordReportExporter {
             }
         }
         return out;
+    }
+
+    private Path nextIndexedReportPath(Path outputDir) throws Exception {
+        int max = 0;
+        try (Stream<Path> files = Files.list(outputDir)) {
+            for (Path p : files.toList()) {
+                String name = p.getFileName().toString();
+                if (name.equals("executive-report.docx")) {
+                    max = Math.max(max, 1);
+                } else if (name.startsWith("executive-report-") && name.endsWith(".docx")) {
+                    String idx = name.substring("executive-report-".length(), name.length() - ".docx".length());
+                    try {
+                        max = Math.max(max, Integer.parseInt(idx));
+                    } catch (NumberFormatException ignored) {}
+                }
+            }
+        }
+        return outputDir.resolve(String.format("executive-report-%03d.docx", max + 1));
     }
 
     private void title(XWPFDocument doc, String text) {

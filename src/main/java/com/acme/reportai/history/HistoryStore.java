@@ -15,8 +15,24 @@ public class HistoryStore {
 
     public void append(Path outputDir, AnalysisResult analysis) throws Exception {
         Path historyDir = outputDir.resolve("history");
+        appendToHistoryDir(historyDir, analysis);
+    }
+
+    public void appendToHistoryDir(Path historyDir, AnalysisResult analysis) throws Exception {
+        appendToFile(historyDir.resolve("executions.jsonl"), analysis);
+    }
+
+    public Path writeNewHistoryFile(Path historyDir, AnalysisResult analysis) throws Exception {
         Files.createDirectories(historyDir);
-        Path file = historyDir.resolve("executions.jsonl");
+        String fileName = "executions-" + analysis.getExecutionReport().getExecutionId() + ".jsonl";
+        Path file = historyDir.resolve(fileName);
+        appendToFile(file, analysis);
+        return file;
+    }
+
+    private void appendToFile(Path file, AnalysisResult analysis) throws Exception {
+        Path historyDir = file.getParent();
+        Files.createDirectories(historyDir);
 
         Map<String, Object> row = new LinkedHashMap<>();
         row.put("executionId", analysis.getExecutionReport().getExecutionId());
