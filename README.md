@@ -123,13 +123,23 @@ mvn clean compile exec:java "-Dexec.args=--cucumber=C:\ruta\cucumber.json --outp
 También te sirve para endpoints compatibles con OpenAI montados localmente o vía gateway.
 
 ### 4. Modo Codex (nuevo)
+
 Este modo usa el cliente OpenAI-compatible pero con `--ai.mode=codex`, pensado para usar modelos de Codex desde un endpoint compatible:
+
 
 ```powershell
 mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --ai.mode=codex --ai.baseUrl=https://api.openai.com/v1 --ai.model=codex-mini-latest --ai.apiKey=TU_API_KEY"
 ```
 
----
+
+### 5. Modo Gemini (nuevo)
+También podés elegir `--ai.mode=gemini` con endpoint/modelo compatibles.
+
+```powershell
+mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --ai.mode=gemini --ai.baseUrl=TU_ENDPOINT_COMPATIBLE --ai.model=gemini-2.5-pro --ai.apiKey=TU_API_KEY"
+```
+
+
 
 ## Salidas
 El proceso genera:
@@ -186,10 +196,27 @@ En PowerShell, si querés llamar un `.bat`, acordate que es con `./` o `.
 | `--project=` | nombre del proyecto |
 | `--env=` | ambiente |
 | `--framework=` | framework usado |
-| `--ai.mode=` | `mock`, `ollama`, `hollama`, `openai`, `codex` |
+| `--ai.mode=` | `mock`, `ollama`, `hollama`, `openai`, `codex`, `gemini` |
 | `--ai.baseUrl=` | base URL del proveedor |
 | `--ai.model=` | modelo a usar |
 | `--ai.apiKey=` | api key si aplica |
+| `--history=` | carpeta donde guardar `executions.jsonl` (opcional, separado de `output`) |
+
+---
+
+## App de escritorio (subir archivo + elegir análisis)
+
+Además de CLI, ahora podés usar una app Swing:
+
+```powershell
+mvn clean compile exec:java "-Dexec.mainClass=com.acme.reportai.cli.ReportAiDesktopApp"
+```
+
+Desde la UI podés:
+- seleccionar archivo `cucumber.json` o carpeta `allure-results`
+- elegir modo de análisis: `codex`, `gemini`, `ollama/hollama`, `mock`
+- definir carpeta de resultados (`output`)
+- definir carpeta de histórico (`history`) separada
 
 ---
 
