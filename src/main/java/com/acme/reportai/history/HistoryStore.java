@@ -15,6 +15,10 @@ public class HistoryStore {
 
     public void append(Path outputDir, AnalysisResult analysis) throws Exception {
         Path historyDir = outputDir.resolve("history");
+        appendToHistoryDir(historyDir, analysis);
+    }
+
+    public void appendToHistoryDir(Path historyDir, AnalysisResult analysis) throws Exception {
         Files.createDirectories(historyDir);
         Path file = historyDir.resolve("executions.jsonl");
 
