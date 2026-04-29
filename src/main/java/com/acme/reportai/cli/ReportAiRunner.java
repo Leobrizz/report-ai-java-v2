@@ -53,8 +53,13 @@ public class ReportAiRunner {
         AnalysisResult analysis = new ReportAnalyzer(aiProvider).analyze(merged);
         HistoryStore historyStore = new HistoryStore();
         historyStore.dumpAnalysis(config.getOutputDir(), analysis);
-        if (config.getHistoryDir() != null) historyStore.appendToHistoryDir(config.getHistoryDir(), analysis);
-        else historyStore.append(config.getOutputDir(), analysis);
+        Path historyBaseDir = config.getHistoryDir() != null ? config.getHistoryDir() : config.getOutputDir().resolve("history");
+        if ("new".equalsIgnoreCase(config.getHistoryMode())) {
+            config.setLastHistoryFile(historyStore.writeNewHistoryFile(historyBaseDir, analysis));
+        } else {
+            historyStore.appendToHistoryDir(historyBaseDir, analysis);
+            config.setLastHistoryFile(historyBaseDir.resolve("executions.jsonl"));
+        }
 
         WordReportExporter exporter = new WordReportExporter();
         return exporter.export(config.getOutputDir(), analysis);

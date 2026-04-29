@@ -200,6 +200,7 @@ En PowerShell, si querés llamar un `.bat`, acordate que es con `./` o `.
 | `--ai.model=` | modelo a usar |
 | `--ai.apiKey=` | api key si aplica |
 | `--history=` | carpeta donde guardar `executions.jsonl` (opcional, separado de `output`) |
+| `--history.mode=` | `append` (usa `executions.jsonl`) o `new` (crea `executions-<executionId>.jsonl`) |
 
 ---
 
@@ -222,6 +223,24 @@ Desde la UI podés:
 - elegir modo de análisis: `codex`, `gemini`, `ollama/hollama`, `mock`
 - definir carpeta de resultados (`output`)
 - definir carpeta de histórico (`history`) separada
+
+---
+
+## Elegir histórico desde consola
+
+Por default usa `append` (acumula en `executions.jsonl`):
+
+```powershell
+mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --history=output/history --history.mode=append --ai.mode=mock"
+```
+
+Si querés historial nuevo por corrida:
+
+```powershell
+mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --history=output/history --history.mode=new --ai.mode=mock"
+```
+
+Con `new` genera archivos como `executions-<executionId>.jsonl`.
 
 ---
 
