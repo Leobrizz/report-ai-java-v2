@@ -1,0 +1,45 @@
+{
+  "executionReport" : {
+    "executionId" : "021d18f0-0d8c-443b-bfc1-0fbf571bc0cb",
+    "project" : "QA Automation",
+    "environment" : "UAT",
+    "framework" : "Cucumber + Selenium",
+    "executionDate" : [ 2026, 4, 21, 23, 55, 51, 672654300 ],
+    "testCases" : [ {
+      "id" : "123",
+      "name" : "QAA-486 - Enterprise - R7 - Emitir póliza Plan 663",
+      "feature" : "src/test/resources/features/R7_Auto.feature:QAA-486",
+      "suite" : "Emisión de Póliza nueva R7",
+      "source" : "allure",
+      "status" : "FAILED",
+      "durationMillis" : 0,
+      "tags" : [ "R7", "emisionPoliza" ],
+      "steps" : [ "Dado una cotización vigente", "Cuando se emite una póliza nueva" ],
+      "errorMessage" : "No se encontró una Cotización con las características solicitadas: Estado: Activa, Producto: Automotor, Plan: 663",
+      "stackTrace" : "java.lang.AssertionError: cotización no encontrada"
+    } ]
+  },
+  "repeatedFailures" : [ {
+    "fingerprint" : "86203bd03888e23b",
+    "normalizedMessage" : "no se encontró una cotización con las características solicitadas estado activa producto automotor plan <num>",
+    "category" : "funcional",
+    "probableCause" : "La precondición de negocio no quedó satisfecha antes de validar el flujo.",
+    "recommendation" : "Revisar lógica funcional y datos previos a la ejecución.",
+    "cases" : [ {
+      "id" : "123",
+      "name" : "QAA-486 - Enterprise - R7 - Emitir póliza Plan 663",
+      "feature" : "src/test/resources/features/R7_Auto.feature:QAA-486",
+      "suite" : "Emisión de Póliza nueva R7",
+      "source" : "allure",
+      "status" : "FAILED",
+      "durationMillis" : 0,
+      "tags" : [ "R7", "emisionPoliza" ],
+      "steps" : [ "Dado una cotización vigente", "Cuando se emite una póliza nueva" ],
+      "errorMessage" : "No se encontró una Cotización con las características solicitadas: Estado: Activa, Producto: Automotor, Plan: 663",
+      "stackTrace" : "java.lang.AssertionError: cotización no encontrada"
+    } ]
+  } ],
+  "categoryCount" : {
+    "funcional" : 1
+  }
+}

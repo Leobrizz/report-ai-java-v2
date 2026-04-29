@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Emisión de Póliza nueva R7",
+    "elements": [
+      {
+        "id": "qaa-481",
+        "name": "QAA-481 - Enterprise - R7 - Emitir póliza Plan 909 Todo Riesgo Con Franquicia Del 10%",
+        "type": "scenario",
+        "keyword": "Scenario",
+        "tags": [{"name": "@R7"}, {"name": "@emisionPoliza"}],
+        "steps": [
+          {"name": "Dado una cotización vigente", "result": {"status": "passed", "duration": 1000000000}},
+          {"name": "Cuando se emite una póliza nueva", "result": {"status": "passed", "duration": 3000000000}},
+          {"name": "Entonces se verifica que la póliza ha sido emitida correctamente", "result": {"status": "passed", "duration": 4000000000}}
+        ]
+      },
+      {
+        "id": "qaa-482",
+        "name": "QAA-482 - Enterprise - R7 - Emitir póliza Plan 909 Todo Riesgo Con Franquicia Del 10% Pautas",
+        "type": "scenario",
+        "keyword": "Scenario",
+        "tags": [{"name": "@R7"}, {"name": "@emisionPoliza"}, {"name": "@QAA-482"}],
+        "steps": [
+          {"name": "Dado una cotización vigente", "result": {"status": "passed", "duration": 1000000000}},
+          {"name": "Cuando se emite una póliza nueva de automotor", "result": {"status": "failed", "duration": 3000000000, "error_message": "No se encontró una Cotización con las características solicitadas: Estado: Activa, Producto: Automotor, Plan: 909, con pautas\njava.lang.AssertionError: Cotización inexistente"}},
+          {"name": "Entonces se verifica el documento", "result": {"status": "skipped", "duration": 0}}
+        ]
+      },
+      {
+        "id": "qaa-485",
+        "name": "QAA-485 - Enterprise - R7 - Emitir póliza Plan 642",
+        "type": "scenario",
+        "keyword": "Scenario",
+        "tags": [{"name": "@R7"}, {"name": "@timeout"}],
+        "steps": [
+          {"name": "Dado una cotización vigente", "result": {"status": "passed", "duration": 1000000000}},
+          {"name": "Cuando se emite una póliza nueva", "result": {"status": "failed", "duration": 3000000000, "error_message": "org.openqa.selenium.TimeoutException: Expected condition failed waiting for visibility of element located by By.id: emitir"}}
+        ]
+      }
+    ]
+  }
+]

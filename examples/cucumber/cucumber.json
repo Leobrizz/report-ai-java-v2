@@ -1,0 +1,159 @@
+[
+  {
+    "line": 4,
+    "elements": [
+      {
+        "start_timestamp": "2026-04-21T19:56:02.234Z",
+        "before": [
+          {
+            "result": {
+              "duration": 21032800,
+              "status": "passed"
+            },
+            "match": {
+              "location": "ar.com.lacaja.test.step.Hooks.acquireIsolation(io.cucumber.java.Scenario)"
+            }
+          },
+          {
+            "result": {
+              "duration": 15538156500,
+              "status": "passed"
+            },
+            "match": {
+              "location": "ar.com.lacaja.test.step.Hooks.setUp(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "line": 43,
+        "name": "QAA-627 - Enterprise - R374 - Validar que no se pueda emitir con dos Líneas de Tecnología",
+        "description": "",
+        "id": "emision-de-poliza-nueva-r374;qaa-627---enterprise---r374---validar-que-no-se-pueda-emitir-con-dos-líneas-de-tecnología",
+        "after": [
+          {
+            "result": {
+              "status": "passed"
+            },
+            "match": {
+              "location": "ar.com.lacaja.test.step.Hooks.releaseIsolation(io.cucumber.java.Scenario)"
+            }
+          },
+          {
+            "result": {
+              "duration": 2031363500,
+              "status": "passed"
+            },
+            "match": {
+              "location": "ar.com.lacaja.test.step.Hooks.tearDown(io.cucumber.java.Scenario)"
+            }
+          }
+        ],
+        "type": "scenario",
+        "keyword": "Escenario",
+        "steps": [
+          {
+            "result": {
+              "duration": 6723184900,
+              "status": "passed"
+            },
+            "line": 44,
+            "name": "un cliente válido para operar de tipo Persona",
+            "match": {
+              "location": "ar.com.lacaja.test.step.BuscarEntidadesStep.unClienteValidoParaOperarTipoPersona()"
+            },
+            "keyword": "Dado "
+          },
+          {
+            "result": {
+              "duration": 51121273500,
+              "status": "passed"
+            },
+            "line": 45,
+            "name": "se emite una póliza nueva con dos Lineas de Tecnología",
+            "match": {
+              "arguments": [
+                {
+                  "val": "con dos Lineas de Tecnología",
+                  "offset": 26
+                }
+              ],
+              "location": "ar.com.lacaja.test.step.EmisionPolizaStep.noSeEmiteUnaPolizaProteccionIntegral(java.lang.String)"
+            },
+            "keyword": "Cuando "
+          },
+          {
+            "result": {
+              "duration": 4140632300,
+              "status": "passed"
+            },
+            "line": 46,
+            "name": "se verifica que la póliza no ha sido emitida correctamente",
+            "match": {
+              "location": "ar.com.lacaja.test.step.EmisionPolizaStep.seVerificaQuePolizaTieneErrores()"
+            },
+            "keyword": "Entonces "
+          }
+        ],
+        "tags": [
+          {
+            "name": "@emisionPoliza"
+          },
+          {
+            "name": "@R374"
+          },
+          {
+            "name": "@regresion"
+          },
+          {
+            "name": "@QAA-627"
+          },
+          {
+            "name": "@M_Emitir_Poliza_R374"
+          },
+          {
+            "name": "@smoke"
+          },
+          {
+            "name": "@canal:directo"
+          },
+          {
+            "name": "@severity:critical"
+          },
+          {
+            "name": "@negative"
+          }
+        ]
+      }
+    ],
+    "name": "Emision de Poliza nueva R374",
+    "description": "",
+    "id": "emision-de-poliza-nueva-r374",
+    "keyword": "Característica",
+    "uri": "file:src/test/resources/features/R374_PI/emisionPoliza.feature",
+    "tags": [
+      {
+        "name": "@emisionPoliza",
+        "type": "Tag",
+        "location": {
+          "line": 3,
+          "column": 1
+        }
+      },
+      {
+        "name": "@R374",
+        "type": "Tag",
+        "location": {
+          "line": 3,
+          "column": 16
+        }
+      },
+      {
+        "name": "@regresion",
+        "type": "Tag",
+        "location": {
+          "line": 3,
+          "column": 22
+        }
+      }
+    ]
+  }
+]

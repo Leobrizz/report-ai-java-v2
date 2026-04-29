@@ -1,0 +1,15 @@
+{
+  "uuid": "123",
+  "name": "QAA-486 - Enterprise - R7 - Emitir póliza Plan 663",
+  "fullName": "src/test/resources/features/R7_Auto.feature:QAA-486",
+  "status": "failed",
+  "labels": [
+    {"name": "suite", "value": "Emisión de Póliza nueva R7"},
+    {"name": "tag", "value": "R7"},
+    {"name": "tag", "value": "emisionPoliza"}
+  ],
+  "steps": [
+    {"name": "Dado una cotización vigente", "status": "passed"},
+    {"name": "Cuando se emite una póliza nueva", "status": "failed", "statusDetails": {"message": "No se encontró una Cotización con las características solicitadas: Estado: Activa, Producto: Automotor, Plan: 663", "trace": "java.lang.AssertionError: cotización no encontrada"}}
+  ]
+}
