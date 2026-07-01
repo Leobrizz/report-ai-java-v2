@@ -30,8 +30,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 public class ReportAiGuiApplication {
     private static final String OLLAMA_BASE_URL = "http://localhost:11434";
     private static final String OLLAMA_MODEL = "llama3.1";
-    private static final String GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai";
-    private static final String GEMINI_MODEL = "gemini-3.5-flash";
+    private static final String GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
+    private static final String GEMINI_MODEL = "gemini-flash-latest";
 
     private final JFrame frame = new JFrame("Report AI - Analizador de reportes");
     private final JComboBox<String> reportType = new JComboBox<>(new String[]{"Auto detectar", "Cucumber JSON", "Allure results"});
