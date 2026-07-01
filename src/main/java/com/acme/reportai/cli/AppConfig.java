@@ -8,6 +8,7 @@ public class AppConfig {
     private Path outputDir = Path.of("output");
     private Path historyDir;
     private String historyMode = "append";
+    private String analysisMode = "historico";
     private String project = "QA Automation";
     private String env = "UAT";
     private String framework = "Cucumber + Selenium";
@@ -27,6 +28,14 @@ public class AppConfig {
     public void setHistoryDir(Path historyDir) { this.historyDir = historyDir; }
     public String getHistoryMode() { return historyMode; }
     public void setHistoryMode(String historyMode) { this.historyMode = historyMode; }
+    public String getAnalysisMode() { return analysisMode; }
+    public void setAnalysisMode(String analysisMode) { this.analysisMode = analysisMode; }
+    public boolean isHistoricalMode() {
+        return "historico".equalsIgnoreCase(analysisMode)
+                || "historico_append".equalsIgnoreCase(analysisMode)
+                || "history".equalsIgnoreCase(analysisMode)
+                || "historical".equalsIgnoreCase(analysisMode);
+    }
     public String getProject() { return project; }
     public void setProject(String project) { this.project = project; }
     public String getEnv() { return env; }
