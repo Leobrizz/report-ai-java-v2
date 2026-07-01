@@ -16,8 +16,8 @@ public class OllamaAiProvider implements AiProvider {
     private final ObjectMapper mapper = new ObjectMapper();
 
     public OllamaAiProvider(String baseUrl, String model) {
-        this.baseUrl = baseUrl;
-        this.model = model;
+        this.baseUrl = baseUrl == null || baseUrl.isBlank() ? "http://localhost:11434" : baseUrl;
+        this.model = model == null || model.isBlank() ? "llama3.1" : model;
     }
 
     @Override
@@ -27,13 +27,14 @@ public class OllamaAiProvider implements AiProvider {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(120000);
             conn.setDoOutput(true);
 
-            String prompt = buildPrompt(cluster);
             String payload = mapper.createObjectNode()
                     .put("model", model)
                     .put("stream", false)
-                    .put("prompt", prompt)
+                    .put("prompt", buildPrompt(cluster))
                     .toString();
 
             try (OutputStream os = conn.getOutputStream()) {
@@ -46,16 +47,16 @@ public class OllamaAiProvider implements AiProvider {
                 return parseResponse(response, cluster);
             }
         } catch (Exception e) {
-            MockAiProvider fallback = new MockAiProvider();
-            return fallback.classify(cluster);
+            return new MockAiProvider().classify(cluster);
         }
     }
 
     private String buildPrompt(FailureCluster cluster) {
-        return "Analizá este cluster de errores QA y respondé SOLO JSON con category, probableCause, recommendation, summary.\n" +
-                "Mensaje normalizado: " + cluster.getNormalizedMessage() + "\n" +
-                "Casos afectados: " + cluster.getCases().size() + "\n" +
-                "Categoría previa: " + cluster.getCategory();
+        String msg = PromptSanitizer.compactError(cluster.getNormalizedMessage());
+        return "Analiza este cluster de errores QA y responde SOLO JSON valido con category, probableCause, recommendation, summary.\n"
+                + "Categoria previa: " + cluster.getCategory() + "\n"
+                + "Casos afectados: " + cluster.getCases().size() + "\n"
+                + "Error resumido:\n" + msg;
     }
 
     private AiClassification parseResponse(String response, FailureCluster cluster) {
@@ -65,11 +66,10 @@ public class OllamaAiProvider implements AiProvider {
             c.setCategory(node.path("category").asText(cluster.getCategory()));
             c.setProbableCause(node.path("probableCause").asText("Causa probable no determinada"));
             c.setRecommendation(node.path("recommendation").asText("Revisar manualmente el cluster"));
-            c.setSummary(node.path("summary").asText("Clasificación por IA local"));
+            c.setSummary(node.path("summary").asText("Clasificacion por IA local"));
             return c;
         } catch (Exception e) {
-            MockAiProvider fallback = new MockAiProvider();
-            return fallback.classify(cluster);
+            return new MockAiProvider().classify(cluster);
         }
     }
 }
