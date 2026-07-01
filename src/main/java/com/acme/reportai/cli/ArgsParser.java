@@ -11,6 +11,7 @@ public class ArgsParser {
             else if (arg.startsWith("--output=")) cfg.setOutputDir(Path.of(arg.substring("--output=".length())));
             else if (arg.startsWith("--history=")) cfg.setHistoryDir(Path.of(arg.substring("--history=".length())));
             else if (arg.startsWith("--history.mode=")) cfg.setHistoryMode(arg.substring("--history.mode=".length()));
+            else if (arg.startsWith("--analysis.mode=")) cfg.setAnalysisMode(arg.substring("--analysis.mode=".length()));
             else if (arg.startsWith("--project=")) cfg.setProject(arg.substring("--project=".length()));
             else if (arg.startsWith("--env=")) cfg.setEnv(arg.substring("--env=".length()));
             else if (arg.startsWith("--framework=")) cfg.setFramework(arg.substring("--framework=".length()));
