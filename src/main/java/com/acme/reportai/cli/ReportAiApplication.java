@@ -1,14 +1,27 @@
 package com.acme.reportai.cli;
 
+import com.acme.reportai.service.ReportRunResult;
+import com.acme.reportai.service.ReportRunner;
+import com.acme.reportai.ui.ReportAiGuiApplication;
+import javax.swing.SwingUtilities;
+
 public class ReportAiApplication {
     public static void main(String[] args) throws Exception {
-        AppConfig config = new ArgsParser().parse(args);
-        var docx = ReportAiRunner.run(config);
+        if (args.length == 0) {
+            SwingUtilities.invokeLater(ReportAiGuiApplication::show);
+            return;
+        }
 
-        System.out.println("Análisis completado.");
-        System.out.println("DOCX generado en: " + docx.toAbsolutePath());
-        System.out.println("JSON generado en: " + config.getOutputDir().resolve("analysis.json").toAbsolutePath());
-        var historyPath = config.getLastHistoryFile() != null ? config.getLastHistoryFile() : config.getOutputDir().resolve("history/executions.jsonl");
-        System.out.println("Historial actualizado en: " + historyPath.toAbsolutePath());
+        AppConfig config = new ArgsParser().parse(args);
+        ReportRunResult result = ReportRunner.run(config);
+
+        System.out.println("Analisis completado.");
+        System.out.println("DOCX generado en: " + result.getDocxPath().toAbsolutePath());
+        System.out.println("JSON generado en: " + result.getAnalysisJsonPath().toAbsolutePath());
+        if (result.getHistoryPath() != null) {
+            System.out.println("Historial actualizado en: " + result.getHistoryPath().toAbsolutePath());
+        } else {
+            System.out.println("Analisis nuevo: historial sin modificar.");
+        }
     }
 }
