@@ -15,10 +15,11 @@ import com.acme.reportai.parser.AllureResultsParser;
 import com.acme.reportai.parser.CucumberJsonParser;
 
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
 public class ReportAiRunner {
-    public static AnalysisResult run(AppConfig config) throws Exception {
+    public static Path run(AppConfig config) throws Exception {
         if (config.getCucumberPath() == null && config.getAllurePath() == null) {
             throw new IllegalArgumentException("Debes indicar --cucumber=... o --allure=...");
         }
@@ -36,7 +37,7 @@ public class ReportAiRunner {
         }
 
         if (config.getAllurePath() != null) {
-            if (!Files.exists(config.getAllurePath())) throw new IllegalArgumentException("No existe la carpeta allure: " + config.getAllurePath());
+            if (!Files.exists(config.getAllurePath())) throw new IllegalArgumentException("No existe la ruta allure (carpeta o *-result.json): " + config.getAllurePath());
             ExecutionReport allure = new AllureResultsParser().parse(config.getAllurePath());
             merged.getTestCases().addAll(allure.getTestCases());
         }
@@ -52,11 +53,15 @@ public class ReportAiRunner {
         AnalysisResult analysis = new ReportAnalyzer(aiProvider).analyze(merged);
         HistoryStore historyStore = new HistoryStore();
         historyStore.dumpAnalysis(config.getOutputDir(), analysis);
-        if (config.getHistoryDir() != null) historyStore.appendToHistoryDir(config.getHistoryDir(), analysis);
-        else historyStore.append(config.getOutputDir(), analysis);
+        Path historyBaseDir = config.getHistoryDir() != null ? config.getHistoryDir() : config.getOutputDir().resolve("history");
+        if ("new".equalsIgnoreCase(config.getHistoryMode())) {
+            config.setLastHistoryFile(historyStore.writeNewHistoryFile(historyBaseDir, analysis));
+        } else {
+            historyStore.appendToHistoryDir(historyBaseDir, analysis);
+            config.setLastHistoryFile(historyBaseDir.resolve("executions.jsonl"));
+        }
 
         WordReportExporter exporter = new WordReportExporter();
-        exporter.export(config.getOutputDir(), analysis);
-        return analysis;
+        return exporter.export(config.getOutputDir(), analysis);
     }
 }

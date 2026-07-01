@@ -5,9 +5,7 @@ Librería y CLI en **Java 17** para:
 - leer resultados de **Allure** (`*-result.json`)
 - normalizar errores y detectar repetidos
 - clasificar por reglas
-
 - enriquecer con IA local (**Ollama / Hollama**) o cloud (**OpenAI, Codex, Gemini**)
-
 - guardar historial de ejecuciones
 - generar un **reporte Word `.docx`**
 
@@ -125,9 +123,7 @@ mvn clean compile exec:java "-Dexec.args=--cucumber=C:\ruta\cucumber.json --outp
 También te sirve para endpoints compatibles con OpenAI montados localmente o vía gateway.
 
 ### 4. Modo Codex (nuevo)
-
 Este modo está separado de `openai` en la CLI (`--ai.mode=codex`) para que puedas rutear y configurar Codex explícitamente.
-
 
 ```powershell
 mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --ai.mode=codex --ai.baseUrl=https://api.openai.com/v1 --ai.model=codex-mini-latest --ai.apiKey=TU_API_KEY"
@@ -147,19 +143,21 @@ El proceso genera:
 
 ```text
 output/
- ├── executive-report.docx
+ ├── executive-report-001.docx
  ├── analysis.json
  └── history/
      └── executions.jsonl
 ```
 
-### executive-report.docx
+### executive-report-XXX.docx
 Documento Word con:
 - resumen ejecutivo
 - totales
 - top errores repetidos
 - clasificación por causa probable
 - detalle por caso fallido
+
+> Cada ejecución crea un nuevo Word incremental (`executive-report-001.docx`, `executive-report-002.docx`, etc.), sin pisar el anterior.
 
 ### analysis.json
 Dump técnico del análisis.
@@ -192,7 +190,7 @@ En PowerShell, si querés llamar un `.bat`, acordate que es con `./` o `.
 | Parámetro | Descripción |
 |---|---|
 | `--cucumber=` | ruta a `cucumber.json` |
-| `--allure=` | ruta al directorio `allure-results` |
+| `--allure=` | ruta al directorio `allure-results` o a un archivo `*-result.json` |
 | `--output=` | carpeta de salida |
 | `--project=` | nombre del proyecto |
 | `--env=` | ambiente |
@@ -202,6 +200,7 @@ En PowerShell, si querés llamar un `.bat`, acordate que es con `./` o `.
 | `--ai.model=` | modelo a usar |
 | `--ai.apiKey=` | api key si aplica |
 | `--history=` | carpeta donde guardar `executions.jsonl` (opcional, separado de `output`) |
+| `--history.mode=` | `append` (usa `executions.jsonl`) o `new` (crea `executions-<executionId>.jsonl`) |
 
 ---
 
@@ -224,6 +223,24 @@ Desde la UI podés:
 - elegir modo de análisis: `codex`, `gemini`, `ollama/hollama`, `mock`
 - definir carpeta de resultados (`output`)
 - definir carpeta de histórico (`history`) separada
+
+---
+
+## Elegir histórico desde consola
+
+Por default usa `append` (acumula en `executions.jsonl`):
+
+```powershell
+mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --history=output/history --history.mode=append --ai.mode=mock"
+```
+
+Si querés historial nuevo por corrida:
+
+```powershell
+mvn clean compile exec:java "-Dexec.args=--allure=C:\ruta\a\allure-results --output=output --history=output/history --history.mode=new --ai.mode=mock"
+```
+
+Con `new` genera archivos como `executions-<executionId>.jsonl`.
 
 ---
 

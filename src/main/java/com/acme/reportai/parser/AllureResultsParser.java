@@ -16,7 +16,7 @@ public class AllureResultsParser implements ReportParser {
 
     @Override
     public boolean supports(Path source) {
-        return Files.isDirectory(source);
+        return Files.isDirectory(source) || (Files.isRegularFile(source) && source.getFileName().toString().endsWith("-result.json"));
     }
 
     @Override
@@ -27,8 +27,12 @@ public class AllureResultsParser implements ReportParser {
         report.setEnvironment("UAT");
         report.setFramework("Allure + Selenium");
 
-        try (Stream<Path> files = Files.list(source)) {
-            files.filter(p -> p.getFileName().toString().endsWith("-result.json"))
+        Stream<Path> allureFiles = Files.isDirectory(source)
+                ? Files.list(source).filter(p -> p.getFileName().toString().endsWith("-result.json"))
+                : Stream.of(source);
+
+        try (Stream<Path> files = allureFiles) {
+            files
                 .forEach(path -> {
                     try {
                         JsonNode root = mapper.readTree(path.toFile());
