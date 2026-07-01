@@ -28,13 +28,18 @@ import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class ReportAiGuiApplication {
+    private static final String OLLAMA_BASE_URL = "http://localhost:11434";
+    private static final String OLLAMA_MODEL = "llama3.1";
+    private static final String GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai";
+    private static final String GEMINI_MODEL = "gemini-3.5-flash";
+
     private final JFrame frame = new JFrame("Report AI - Analizador de reportes");
     private final JComboBox<String> reportType = new JComboBox<>(new String[]{"Auto detectar", "Cucumber JSON", "Allure results"});
     private final JTextField inputPath = new JTextField();
     private final JTextField outputPath = new JTextField("output");
     private final JComboBox<String> aiMode = new JComboBox<>(new String[]{"Sin IA / Mock", "Ollama local", "OpenAI compatible", "Codex", "Gemini"});
-    private final JTextField aiBaseUrl = new JTextField("http://localhost:11434");
-    private final JTextField aiModel = new JTextField("llama3.1");
+    private final JTextField aiBaseUrl = new JTextField(OLLAMA_BASE_URL);
+    private final JTextField aiModel = new JTextField(OLLAMA_MODEL);
     private final JTextField aiApiKey = new JTextField();
     private final JComboBox<String> analysisMode = new JComboBox<>(new String[]{"Con historico", "Analisis nuevo"});
     private final JTextField project = new JTextField("QA Automation");
@@ -48,6 +53,8 @@ public class ReportAiGuiApplication {
     }
 
     private void open() {
+        aiMode.addActionListener(e -> updateAiDefaults());
+        updateAiDefaults();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(980, 720);
         frame.setLocationRelativeTo(null);
@@ -56,6 +63,18 @@ public class ReportAiGuiApplication {
         frame.add(form(), BorderLayout.CENTER);
         frame.add(actions(), BorderLayout.SOUTH);
         frame.setVisible(true);
+    }
+
+    private void updateAiDefaults() {
+        String selected = String.valueOf(aiMode.getSelectedItem());
+        if ("Gemini".equals(selected)) {
+            if (aiBaseUrl.getText().isBlank() || OLLAMA_BASE_URL.equals(aiBaseUrl.getText())) aiBaseUrl.setText(GEMINI_BASE_URL);
+            if (aiModel.getText().isBlank() || OLLAMA_MODEL.equals(aiModel.getText())) aiModel.setText(GEMINI_MODEL);
+            if (aiApiKey.getText().isBlank()) aiApiKey.setText(System.getenv("GEMINI_API_KEY") == null ? "" : System.getenv("GEMINI_API_KEY"));
+        } else if ("Ollama local".equals(selected)) {
+            if (aiBaseUrl.getText().isBlank() || GEMINI_BASE_URL.equals(aiBaseUrl.getText())) aiBaseUrl.setText(OLLAMA_BASE_URL);
+            if (aiModel.getText().isBlank() || GEMINI_MODEL.equals(aiModel.getText())) aiModel.setText(OLLAMA_MODEL);
+        }
     }
 
     private JPanel header() {
@@ -186,10 +205,17 @@ public class ReportAiGuiApplication {
         cfg.setProject(project.getText().isBlank() ? "QA Automation" : project.getText());
         cfg.setEnv(env.getText().isBlank() ? "UAT" : env.getText());
         cfg.setAnalysisMode(analysisMode.getSelectedIndex() == 0 ? "historico" : "nuevo");
-        cfg.setAiMode(mapAiMode());
-        cfg.setAiBaseUrl(aiBaseUrl.getText());
-        cfg.setAiModel(aiModel.getText());
-        cfg.setAiApiKey(aiApiKey.getText());
+        String mode = mapAiMode();
+        cfg.setAiMode(mode);
+        if ("gemini".equals(mode)) {
+            cfg.setAiBaseUrl(aiBaseUrl.getText().isBlank() ? GEMINI_BASE_URL : aiBaseUrl.getText());
+            cfg.setAiModel(aiModel.getText().isBlank() ? GEMINI_MODEL : aiModel.getText());
+            cfg.setAiApiKey(aiApiKey.getText().isBlank() ? System.getenv("GEMINI_API_KEY") : aiApiKey.getText());
+        } else {
+            cfg.setAiBaseUrl(aiBaseUrl.getText());
+            cfg.setAiModel(aiModel.getText());
+            cfg.setAiApiKey(aiApiKey.getText());
+        }
         return cfg;
     }
 
