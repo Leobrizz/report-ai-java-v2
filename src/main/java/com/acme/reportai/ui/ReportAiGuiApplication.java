@@ -1,5 +1,7 @@
 package com.acme.reportai.ui;
 
+import com.acme.reportai.ai.AiConnectionResult;
+import com.acme.reportai.ai.AiConnectionVerifier;
 import com.acme.reportai.cli.AppConfig;
 import com.acme.reportai.service.ReportRunResult;
 import com.acme.reportai.service.ReportRunner;
@@ -12,6 +14,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -174,7 +177,23 @@ public class ReportAiGuiApplication {
             AppConfig cfg = buildConfig();
             log.setText("Iniciando analisis...\n");
             new SwingWorker<ReportRunResult, String>() {
-                @Override protected ReportRunResult doInBackground() throws Exception { return ReportRunner.run(cfg); }
+                @Override protected ReportRunResult doInBackground() throws Exception {
+                    publish("Proveedor seleccionado: " + cfg.getAiMode());
+                    publish("Base URL IA: " + cfg.getAiBaseUrl());
+                    publish("Modelo IA: " + cfg.getAiModel());
+                    publish("API Key: " + (cfg.getAiApiKey() == null || cfg.getAiApiKey().isBlank() ? "no cargada en UI, se intenta variable de entorno" : "cargada"));
+                    publish("Verificando conexion con IA...");
+                    AiConnectionResult check = AiConnectionVerifier.verify(cfg);
+                    publish(check.toLogLine());
+                    if (!check.isOk()) {
+                        throw new IllegalStateException("No se pudo conectar con " + check.getProvider() + ": " + check.getMessage());
+                    }
+                    publish("Conexion verificada. Generando reporte...");
+                    return ReportRunner.run(cfg);
+                }
+                @Override protected void process(List<String> chunks) {
+                    for (String line : chunks) log.append(line + "\n");
+                }
                 @Override protected void done() {
                     try {
                         lastResult = get();
