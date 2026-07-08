@@ -10,6 +10,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AiConnectionVerifier {
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -33,12 +35,31 @@ public class AiConnectionVerifier {
 
     private static AiConnectionResult verifyGemini(AppConfig config) {
         String baseUrl = valueOrDefault(config.getAiBaseUrl(), GEMINI_BASE_URL);
-        String model = normalizeGeminiModel(valueOrDefault(config.getAiModel(), GEMINI_MODEL));
+        String selectedModel = normalizeGeminiModel(valueOrDefault(config.getAiModel(), GEMINI_MODEL));
         String apiKey = valueOrDefault(config.getAiApiKey(), System.getenv("GEMINI_API_KEY"));
         if (apiKey == null || apiKey.isBlank()) {
-            return fail("Gemini", "gemini", baseUrl, model, "Falta API key. Cargala en la UI o setea GEMINI_API_KEY.");
+            return fail("Gemini", "gemini", baseUrl, selectedModel, "Falta API key. Cargala en la UI o setea GEMINI_API_KEY.");
         }
 
+        List<String> models = geminiModelsToTry(selectedModel);
+        StringBuilder errors = new StringBuilder();
+        for (String model : models) {
+            AiConnectionResult result = tryGeminiModel(baseUrl, model, apiKey);
+            if (result.isOk()) {
+                if (!model.equals(selectedModel)) {
+                    return ok("Gemini", "gemini", baseUrl, model, "Conexion verificada con modelo alternativo porque " + selectedModel + " estaba saturado/no disponible.");
+                }
+                return result;
+            }
+            errors.append(model).append(" => ").append(result.getMessage()).append(" | ");
+            if (!isTransientError(result.getMessage())) {
+                return fail("Gemini", "gemini", baseUrl, model, result.getMessage());
+            }
+        }
+        return fail("Gemini", "gemini", baseUrl, selectedModel, "No se pudo conectar con Gemini. Se probaron modelos alternativos. " + compact(errors.toString()));
+    }
+
+    private static AiConnectionResult tryGeminiModel(String baseUrl, String model, String apiKey) {
         try {
             String cleanBaseUrl = trimSlash(baseUrl);
             String encodedModel = URLEncoder.encode(model, StandardCharsets.UTF_8);
@@ -149,6 +170,24 @@ public class AiConnectionVerifier {
 
     private static AiConnectionResult fail(String provider, String mode, String baseUrl, String model, String message) {
         return new AiConnectionResult(false, provider, mode, baseUrl, model, message);
+    }
+
+    private static List<String> geminiModelsToTry(String selectedModel) {
+        List<String> models = new ArrayList<>();
+        addUnique(models, selectedModel);
+        addUnique(models, "gemini-2.0-flash");
+        addUnique(models, "gemini-2.0-flash-lite");
+        addUnique(models, "gemini-1.5-flash");
+        return models;
+    }
+
+    private static void addUnique(List<String> values, String value) {
+        if (value != null && !value.isBlank() && !values.contains(value)) values.add(value);
+    }
+
+    private static boolean isTransientError(String message) {
+        String m = message == null ? "" : message.toLowerCase();
+        return m.contains("http 429") || m.contains("http 500") || m.contains("http 502") || m.contains("http 503") || m.contains("http 504") || m.contains("unavailable") || m.contains("high demand");
     }
 
     private static String valueOrDefault(String value, String fallback) {
